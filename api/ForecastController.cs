@@ -23,8 +23,8 @@ namespace WebApplication1
         [Route("GetData")]
         public JsonResult GetData()
         {
-            string query = "SELECT * FROM [exchangeRate].[dbo].[ForecastResults]";
-            DataTable table = new DataTable();
+			string query = "SELECT * FROM [exchangeRate].[dbo].[ForecastResults] ORDER BY ds";
+			DataTable table = new DataTable();
             string connectionString = @"Data Source=(localdb)\onlab;Initial Catalog=exchangeRate;Integrated Security=True;";
             using (SqlConnection myCon = new SqlConnection(connectionString))
             {

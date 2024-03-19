@@ -20,7 +20,7 @@ class App extends Component {
   }
 
   async refreshNotes() {
-    fetch(this.API_URL + "api/TodoApp/GetData")
+    fetch(this.API_URL + "api/Forecast/GetData")
       .then(response => response.json())
       .then(data => {
         this.setState({ notes: data });
@@ -39,7 +39,7 @@ class App extends Component {
     const { startDate, endDate, forecastDays } = this.state;
     // Kalkuláció kezdete, a calculating állapot beállítása true-ra
     this.setState({ calculating: true });
-    fetch(`${this.API_URL}api/TodoApp/Calculate?start_date=${startDate}&end_date=${endDate}&forecast_days=${forecastDays}`)
+    fetch(`${this.API_URL}api/Forecast/Calculate?start_date=${startDate}&end_date=${endDate}&forecast_days=${forecastDays}`)
       .then(response => response.json())
       .then(result => {
         console.log(result);
