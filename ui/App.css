@@ -44,11 +44,25 @@ table {
   margin-top: 5%;
 }
 
+.table2 {
+  margin: auto;
+  border-collapse: collapse;
+  text-align: center;
+  margin-top: 5%;
+  font-size: 20px;
+}
+
 th, td {
   padding: 10px;
 }
 
-.loading-indicator {
+.calculating-indicator {
   font-size: 40px;
   font-weight: bold;
 }
+
+.horizontal-line {
+  border-bottom: 1px solid black; /* Vízszintes vonal fekete színben és 1px vastagságban */
+}
+
+
