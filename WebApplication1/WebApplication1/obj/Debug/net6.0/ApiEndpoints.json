@@ -53,6 +53,38 @@
   },
   {
     "ContainingType": "WebApplication1.ForecastController",
+    "Method": "LoadData",
+    "RelativePath": "api/Forecast/LoadData",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "username",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebApplication1.ForecastController",
+    "Method": "LoadHistoryData",
+    "RelativePath": "api/Forecast/LoadHistoryData",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "username",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebApplication1.ForecastController",
     "Method": "Login",
     "RelativePath": "api/Forecast/Login",
     "HttpMethod": "POST",
@@ -78,6 +110,38 @@
       {
         "Name": "user",
         "Type": "WebApplication1.User",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebApplication1.ForecastController",
+    "Method": "SaveData",
+    "RelativePath": "api/Forecast/SaveData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userData",
+        "Type": "UserData",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebApplication1.ForecastController",
+    "Method": "SaveHistoricalData",
+    "RelativePath": "api/Forecast/SaveHistoricalData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "historicalDataList",
+        "Type": "System.Collections.Generic.List\u00601[[HistoricalData, WebApplication1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "IsRequired": true
       }
     ],

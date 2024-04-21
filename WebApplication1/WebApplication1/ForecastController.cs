@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -59,6 +60,35 @@ namespace WebApplication1
 		{
 			return new JsonResult(_userManager.Registration(user.Username, user.Password));
 		}
+
+		[HttpGet]
+		[Route("LoadData")]
+		public JsonResult LoadData(string username)
+		{
+			return new JsonResult(_userManager.LoadData(username));
+		}
+
+		[HttpGet]
+		[Route("LoadHistoryData")]
+		public JsonResult LoadHistoryData(string username)
+		{
+			return new JsonResult(_userManager.LoadHistoryData(username));
+		}
+
+		[HttpPost]
+		[Route("SaveData")]
+		public JsonResult SaveData([FromBody] UserData userData)
+		{
+			return new JsonResult(_userManager.SaveUserData(userData));
+		}
+
+		[HttpPost]
+		[Route("SaveHistoricalData")]
+		public JsonResult SaveHistoricalData([FromBody] List<HistoricalData> historicalDataList)
+		{
+			return new JsonResult(_userManager.SaveHistoricalData(historicalDataList));
+		}
+
 
 		[HttpGet]
 		[Route("Calculate")]

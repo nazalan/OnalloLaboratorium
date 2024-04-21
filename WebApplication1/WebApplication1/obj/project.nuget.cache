@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ztlYNNNX30pKZa6lacB9nrYSa2+qw4Y/jXLeIjtp/MbHDsJOicMn65pZTopv0qi6KG7bJxbJ6A3fKGrWXGMkew==",
+  "dgSpecHash": "BO+4kWuIDrcgxjBo1qYDvV4bo0XnKmlZ5dAFLYD4Xf7ZCgRli8ZD7JxilJDntVbMB9xYqCqWWZSUPAgllPIttA==",
   "success": true,
-  "projectFilePath": "C:\\work\\onlab\\WebApplication1\\WebApplication1\\WebApplication1.csproj",
+  "projectFilePath": "C:\\work\\OnalloLaboratorium\\WebApplication1\\WebApplication1\\WebApplication1.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ThinkPad\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\6.0.0\\microsoft.aspnetcore.jsonpatch.6.0.0.nupkg.sha512",
     "C:\\Users\\ThinkPad\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\6.0.0\\microsoft.aspnetcore.mvc.newtonsoftjson.6.0.0.nupkg.sha512",

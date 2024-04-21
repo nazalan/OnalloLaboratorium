@@ -1,5 +1,3 @@
-//TODO adatok mentése
-
 import React, { Component } from 'react';
 import './App.css';
 
@@ -7,10 +5,11 @@ class Forecast extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      dataLoaded: false,
       data: [],
-      startDate: '',
-      endDate: '',
-      forecastDays: '',
+      startDate: "2010-01-01",
+      endDate: "2011-01-01",
+      forecastDays: 0,
       calculating: false,
       counterIndex: 0,
       counting: false,
@@ -19,23 +18,49 @@ class Forecast extends Component {
       amount: 0,
       isEuroToForint: true,
       history: [],
-      newsDate: ''
+      newsDate: '',
+      loggedInUser: this.props.loggedInUser,
+      loggedInUserId: this.props.loggedInUserId
     };
     this.interval = null;
+    this.API_URL = "http://localhost:5025/";
     this.handleExchange = this.handleExchange.bind(this);
     this.toggleExchangeDirection = this.toggleExchangeDirection.bind(this);
+    this.counterIndex=10;
   }
 
-  API_URL = "http://localhost:5025/";
-
   componentDidMount() {
-    this.setState({
-      startDate: '2005-01-01',
-      endDate: '2007-01-01',
-      forecastDays: '50',
-      newsDate: '2020-10-10',
-    });
-    this.refreshData();
+    this.loadData();
+    this.loadHistoryData();
+    this.handleCalculate();
+  }
+
+  loadData() {
+    fetch(this.API_URL + "api/Forecast/LoadData?username=test1")
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          this.setState({
+            startDate: this.formatDate(data.userData.StartDate),
+            endDate: this.formatDate(data.userData.EndDate),
+            forecastDays: data.userData.ForecastDays,
+            counterIndex: data.userData.CounterIndex,
+            moneyEUR: data.userData.EUR,
+            moneyHUF: data.userData.HUF,
+            dataLoaded: true
+          });
+        }
+      });
+  }
+
+  loadHistoryData() {
+    fetch(this.API_URL + "api/Forecast/LoadHistoryData?username=test1")
+      .then(response => response.json())
+      .then(history => {
+        if (Array.isArray(history)) {
+          this.setState({ history: history });
+        }
+      });
   }
 
   componentWillUnmount() {
@@ -49,6 +74,7 @@ class Forecast extends Component {
       .then(_data => {
         this.setState({ data: _data });
       });
+    console.log(this.state.loggedInUser);
   }
 
   formatDate(date) {
@@ -61,7 +87,7 @@ class Forecast extends Component {
 
   handleCalculate = () => {
     const { startDate, endDate, forecastDays } = this.state;
-    this.handleReset()
+    this.handleReset();
     this.setState({ calculating: true });
     fetch(`${this.API_URL}api/Forecast/Calculate?start_date=${startDate}&end_date=${endDate}&forecast_days=${forecastDays}`)
       .then(response => response.json())
@@ -101,9 +127,16 @@ class Forecast extends Component {
   }
 
   handleReset = () => {
-    this.handleStopCounter()
+    this.handleStopCounter();
     this.setState({ counting: false, counterIndex: 0, moneyEUR: 100, moneyHUF: 0, history: [] });
-    this.componentWillUnmount()
+    // this.componentWillUnmount();
+  }
+
+  toggleExchangeDirection() {
+    this.setState(prevState => ({
+      isEuroToForint: !prevState.isEuroToForint,
+      direction: prevState.isEuroToForint ? 1 : 0
+    }));
   }
 
   handleExchange = () => {
@@ -112,10 +145,10 @@ class Forecast extends Component {
     let updatedMoneyHUF = moneyHUF;
     let exchangeRate = data[counterIndex].Actual;
     let newHistoryItem = {
-      ds: data[counterIndex].ds,
-      exchangeRate: exchangeRate,
-      amount: Number(amount),
-      direction: isEuroToForint ? 'EUR to HUF' : 'HUF to EUR'
+      Date: data[counterIndex].ds,
+      ExchangeRate: exchangeRate,
+      Amount: Number(amount),
+      Direction: isEuroToForint ? 0 : 1
     };
 
     let updatedHistory = [...history, newHistoryItem];
@@ -135,11 +168,6 @@ class Forecast extends Component {
     });
   }
 
-  toggleExchangeDirection() {
-    this.setState(prevState => ({
-      isEuroToForint: !prevState.isEuroToForint
-    }));
-  }
 
   lastDaysChanges(day) {
     const { data, counterIndex } = this.state;
@@ -151,25 +179,98 @@ class Forecast extends Component {
   }
 
   handleGetNews = () => {
-    console.log("getNews"); 
+    console.log("getNews");
     const { newsDate } = this.state;
     fetch(`${this.API_URL}api/Forecast/GetNews?date=${newsDate}`)
       .then(response => response.json())
       .then(result => {
         // TODO
-        console.log(result); 
+        console.log(result);
       })
       .catch(error => {
         console.error('Error:', error);
       });
   };
 
+  handleSaveData = () => {
+    const { startDate, endDate, forecastDays, counterIndex, moneyEUR, moneyHUF, loggedInUserId } = this.state;
+    const userData = {
+      userID: loggedInUserId, // Felhasználói azonosító
+      startDate: startDate,
+      endDate: endDate,
+      forecastDays: forecastDays,
+      eur: moneyEUR,
+      huf: moneyHUF,
+      counterIndex: counterIndex,
+    };
+
+    fetch(this.API_URL + "api/Forecast/SaveData", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(userData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        console.log("User data saved successfully");
+        // Történelmi adatok mentése
+        this.saveHistoricalData(loggedInUserId);
+      } else {
+        console.error("Failed to save user data");
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
+
+  saveHistoricalData(userId) {
+  const { history } = this.state;
+  const formattedHistory = history.map(item => ({
+    userID: userId,
+    date: item.Date,
+    exchangeRate: item.ExchangeRate,
+    amount: item.Amount,
+    direction: item.Direction
+  }));
+
+  fetch(this.API_URL + "api/Forecast/SaveHistoricalData", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formattedHistory)
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      console.log("Historical data saved successfully");
+    } else {
+      console.error("Failed to save historical data");
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+
+
+
+
 
   render() {
-    const { data, startDate, endDate, forecastDays, calculating, counterIndex, counting, moneyEUR, moneyHUF, amount, isEuroToForint, history, newsDate } = this.state;
+    const { dataLoaded, data, startDate, endDate, forecastDays, calculating, counterIndex, counting, moneyEUR, moneyHUF, amount, isEuroToForint, history, newsDate, loggedInUser, loggedInUserId } = this.state;
+
+    if (!dataLoaded) {
+      return <div>Loading...</div>;
+    }
+
     return (
       <div className="App">
-        <h2>Forecast</h2>
+        <h2>Forecast {loggedInUser} {loggedInUserId}</h2>
         <div className="calculate-form">
           <label htmlFor="startDate">Start Date:</label>
           <input type="date" id="startDate" name="startDate" value={startDate} onChange={this.handleInputChange} />
@@ -179,6 +280,7 @@ class Forecast extends Component {
           <input type="number" id="forecastDays" name="forecastDays" value={forecastDays} onChange={this.handleInputChange} />
           <button onClick={this.handleCalculate} disabled={calculating}>Calculate</button>
           <button onClick={this.handleManualRefresh}>Manual Refresh</button>
+          <button onClick={this.handleSaveData}>Save Data</button>
         </div>
         {calculating && <div className="calculating-indicator">Calculating...</div>}
         <div>
@@ -217,10 +319,10 @@ class Forecast extends Component {
             {history.map((item, index) => (
               <tr key={index}>
                 <td></td>
-                <td>{this.formatDate(item.ds)}</td>
-                <td>{item.exchangeRate.toFixed(3)}</td>
-                <td>{item.amount.toFixed(0)}</td>
-                <td>{item.direction}</td>
+                <td>{this.formatDate(item.Date)}</td>
+                <td>{item.ExchangeRate.toFixed(3)}</td>
+                <td>{item.Amount.toFixed(0)}</td>
+                <td>{item.Direction === 0 ? "EUR to HUF" : "HUF to EUR"}</td>
               </tr>
             ))}
           </tbody>

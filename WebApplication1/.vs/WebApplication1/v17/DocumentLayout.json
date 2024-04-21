@@ -1,21 +1,29 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\work\\onlab\\WebApplication1\\",
+  "WorkspaceRootPath": "C:\\work\\OnalloLaboratorium\\WebApplication1\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{61A66C26-AC78-4D3F-9876-3E96A1D79CF5}|WebApplication1\\WebApplication1.csproj|c:\\work\\onlab\\webapplication1\\webapplication1\\forecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{61A66C26-AC78-4D3F-9876-3E96A1D79CF5}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\forecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{61A66C26-AC78-4D3F-9876-3E96A1D79CF5}|WebApplication1\\WebApplication1.csproj|c:\\work\\onlab\\webapplication1\\webapplication1\\usermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{61A66C26-AC78-4D3F-9876-3E96A1D79CF5}|WebApplication1\\WebApplication1.csproj|c:\\work\\onallolaboratorium\\webapplication1\\webapplication1\\usermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{61A66C26-AC78-4D3F-9876-3E96A1D79CF5}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\usermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{61A66C26-AC78-4D3F-9876-3E96A1D79CF5}|WebApplication1\\WebApplication1.csproj|c:\\work\\onlab\\webapplication1\\webapplication1\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{61A66C26-AC78-4D3F-9876-3E96A1D79CF5}|WebApplication1\\WebApplication1.csproj|c:\\work\\onallolaboratorium\\webapplication1\\webapplication1\\forecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{61A66C26-AC78-4D3F-9876-3E96A1D79CF5}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\forecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61A66C26-AC78-4D3F-9876-3E96A1D79CF5}|WebApplication1\\WebApplication1.csproj|c:\\work\\onallolaboratorium\\webapplication1\\webapplication1\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{61A66C26-AC78-4D3F-9876-3E96A1D79CF5}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{61A66C26-AC78-4D3F-9876-3E96A1D79CF5}|WebApplication1\\WebApplication1.csproj|c:\\work\\onlab\\webapplication1\\webapplication1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{61A66C26-AC78-4D3F-9876-3E96A1D79CF5}|WebApplication1\\WebApplication1.csproj|c:\\work\\onallolaboratorium\\webapplication1\\webapplication1\\userdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{61A66C26-AC78-4D3F-9876-3E96A1D79CF5}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\userdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61A66C26-AC78-4D3F-9876-3E96A1D79CF5}|WebApplication1\\WebApplication1.csproj|c:\\work\\onallolaboratorium\\webapplication1\\webapplication1\\historicaldata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{61A66C26-AC78-4D3F-9876-3E96A1D79CF5}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\historicaldata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61A66C26-AC78-4D3F-9876-3E96A1D79CF5}|WebApplication1\\WebApplication1.csproj|c:\\work\\onallolaboratorium\\webapplication1\\webapplication1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{61A66C26-AC78-4D3F-9876-3E96A1D79CF5}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -46,13 +54,39 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
+              "Title": "HistoricalData.cs",
+              "DocumentMoniker": "C:\\work\\OnalloLaboratorium\\WebApplication1\\WebApplication1\\HistoricalData.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\HistoricalData.cs",
+              "ToolTip": "C:\\work\\OnalloLaboratorium\\WebApplication1\\WebApplication1\\HistoricalData.cs",
+              "RelativeToolTip": "WebApplication1\\HistoricalData.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-21T16:42:16.349Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "UserData.cs",
+              "DocumentMoniker": "C:\\work\\OnalloLaboratorium\\WebApplication1\\WebApplication1\\UserData.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\UserData.cs",
+              "ToolTip": "C:\\work\\OnalloLaboratorium\\WebApplication1\\WebApplication1\\UserData.cs",
+              "RelativeToolTip": "WebApplication1\\UserData.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-21T16:41:10.033Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
               "Title": "UserManager.cs",
-              "DocumentMoniker": "C:\\work\\onlab\\WebApplication1\\WebApplication1\\UserManager.cs",
+              "DocumentMoniker": "C:\\work\\OnalloLaboratorium\\WebApplication1\\WebApplication1\\UserManager.cs",
               "RelativeDocumentMoniker": "WebApplication1\\UserManager.cs",
-              "ToolTip": "C:\\work\\onlab\\WebApplication1\\WebApplication1\\UserManager.cs",
+              "ToolTip": "C:\\work\\OnalloLaboratorium\\WebApplication1\\WebApplication1\\UserManager.cs",
               "RelativeToolTip": "WebApplication1\\UserManager.cs",
-              "ViewState": "AQIAAAMAAAAAAAAAAAAAACYAAAAEAAAA",
+              "ViewState": "AQIAACEAAAAAAAAAAAAAAEcAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-04-10T14:35:42.656Z",
               "EditorCaption": ""
@@ -61,38 +95,40 @@
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "User.cs",
-              "DocumentMoniker": "C:\\work\\onlab\\WebApplication1\\WebApplication1\\User.cs",
+              "DocumentMoniker": "C:\\work\\OnalloLaboratorium\\WebApplication1\\WebApplication1\\User.cs",
               "RelativeDocumentMoniker": "WebApplication1\\User.cs",
-              "ToolTip": "C:\\work\\onlab\\WebApplication1\\WebApplication1\\User.cs",
+              "ToolTip": "C:\\work\\OnalloLaboratorium\\WebApplication1\\WebApplication1\\User.cs",
               "RelativeToolTip": "WebApplication1\\User.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAQAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-10T14:21:11.016Z"
+              "WhenOpened": "2024-04-10T14:21:11.016Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "ForecastController.cs",
-              "DocumentMoniker": "C:\\work\\onlab\\WebApplication1\\WebApplication1\\ForecastController.cs",
+              "DocumentMoniker": "C:\\work\\OnalloLaboratorium\\WebApplication1\\WebApplication1\\ForecastController.cs",
               "RelativeDocumentMoniker": "WebApplication1\\ForecastController.cs",
-              "ToolTip": "C:\\work\\onlab\\WebApplication1\\WebApplication1\\ForecastController.cs",
+              "ToolTip": "C:\\work\\OnalloLaboratorium\\WebApplication1\\WebApplication1\\ForecastController.cs",
               "RelativeToolTip": "WebApplication1\\ForecastController.cs",
-              "ViewState": "AQIAAAQAAAAAAAAAAAAAwCwAAAADAAAA",
+              "ViewState": "AQIAACMAAAAAAAAAAADwvz4AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-02-25T20:24:20.24Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\work\\onlab\\WebApplication1\\WebApplication1\\Program.cs",
+              "DocumentMoniker": "C:\\work\\OnalloLaboratorium\\WebApplication1\\WebApplication1\\Program.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Program.cs",
-              "ToolTip": "C:\\work\\onlab\\WebApplication1\\WebApplication1\\Program.cs",
+              "ToolTip": "C:\\work\\OnalloLaboratorium\\WebApplication1\\WebApplication1\\Program.cs",
               "RelativeToolTip": "WebApplication1\\Program.cs",
-              "ViewState": "AQIAAAgAAAAAAAAAAAAowCoAAAAAAAAA",
+              "ViewState": "AQIAABcAAAAAAAAAAAASwCgAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-02-25T20:11:50.867Z"
+              "WhenOpened": "2024-02-25T20:11:50.867Z",
+              "EditorCaption": ""
             }
           ]
         }

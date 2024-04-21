@@ -1,23 +1,28 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
-const Login = () => {
+const Login = ({ setLoggedInUser,  setLoggedInUserId}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
-  const  API_URL = "http://localhost:5025/";
+  const API_URL = "http://localhost:5025/";
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const response = await axios.post(`${API_URL}api/Forecast/Login`, {
-            "username" : username,
-            "password" : password
-          });
+      const response = await axios.post(`${API_URL}api/Forecast/Login`, {
+        "username" : username,
+        "password" : password
+      });
       if (response.data.success) {
-        setLoggedIn(true); 
+        setLoggedIn(true);
+        setLoggedInUser(username);
+        setLoggedInUserId(response.data.userId);
+        console.log(response.data.userId);
       } else {
         setError(response.data.message); 
       }
@@ -27,8 +32,7 @@ const Login = () => {
   };
 
   if (isLoggedIn) {
-    return <Navigate to="/Forecast" />; 
-    // TODO adatok betöltése 
+    return <Navigate to="/forecast" state={{ username: username }} />; 
   }
 
   return (
@@ -46,9 +50,9 @@ const Login = () => {
         {error && <div>{error}</div>}
         <button type="submit">Bejelentkezés</button>
       </form>
-      {/* <button>
-        TODO gomb a regisztrációra 
-      </button> */}
+      <button onClick={() => navigate('/register')}>
+        Regisztráció
+      </button>
     </div>
   );
 };
