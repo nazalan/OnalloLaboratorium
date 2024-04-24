@@ -68,7 +68,7 @@ class Forecast extends Component {
   }
 
   async refreshData() {
-    this.setState({ counterIndex: 0, counting: false });
+    this.setState({ counting: false });
     fetch(this.API_URL + "api/Forecast/GetData")
       .then(response => response.json())
       .then(_data => {
@@ -195,7 +195,7 @@ class Forecast extends Component {
   handleSaveData = () => {
     const { startDate, endDate, forecastDays, counterIndex, moneyEUR, moneyHUF, loggedInUserId } = this.state;
     const userData = {
-      userID: loggedInUserId, // Felhasználói azonosító
+      userID: loggedInUserId, 
       startDate: startDate,
       endDate: endDate,
       forecastDays: forecastDays,

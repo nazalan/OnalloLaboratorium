@@ -223,7 +223,6 @@ namespace WebApplication1
         }
     }
 
-    // Történelmi adatok mentése az adatbázisba
     public object SaveHistoricalData(List<HistoricalData> historicalDataList)
     {
         string connectionString = _configuration.GetConnectionString("DefaultConnection");

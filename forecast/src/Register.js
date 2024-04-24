@@ -12,29 +12,6 @@ const Register = () => {
 
   const API_URL = "http://localhost:5025/";
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     if (password !== confirmPassword) {
-  //       setError('A jelszavak nem egyeznek meg');
-  //       return;
-  //     }
-
-  //     const response = await axios.post(`${API_URL}api/Forecast/Register`, {
-  //       username: username,
-  //       password: password
-  //     });
-
-  //     if (response.data && response.data.success) {
-  //       setRegistered(true); 
-  //     } else {
-  //       setError(response.data ? response.data.message : 'Hiba történt a regisztráció során!'); 
-  //     }
-  //   } catch (error) {
-  //     setError('Hiba történt a regisztráció során!');
-  //   }
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
