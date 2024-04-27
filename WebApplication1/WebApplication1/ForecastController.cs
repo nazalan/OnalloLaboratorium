@@ -63,16 +63,16 @@ namespace WebApplication1
 
 		[HttpGet]
 		[Route("LoadData")]
-		public JsonResult LoadData(string username)
+		public JsonResult LoadData(int id)
 		{
-			return new JsonResult(_userManager.LoadData(username));
+			return new JsonResult(_userManager.LoadData(id));
 		}
 
 		[HttpGet]
 		[Route("LoadHistoryData")]
-		public JsonResult LoadHistoryData(string username)
+		public JsonResult LoadHistoryData(int id)
 		{
-			return new JsonResult(_userManager.LoadHistoryData(username));
+			return new JsonResult(_userManager.LoadHistoryData(id));
 		}
 
 		[HttpPost]

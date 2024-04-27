@@ -72,21 +72,12 @@ namespace WebApplication1
 
 		}
 
-		public object LoadData(string username)
+		public object LoadData(int userId)
 		{
 			string connectionString = _configuration.GetConnectionString("DefaultConnection");
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				connection.Open();
-
-				// Először lekérjük a felhasználó azonosítóját a felhasználónév alapján
-				string userIdQuery = "SELECT Id FROM Users WHERE Username = @Username";
-				int userId;
-				using (SqlCommand userIdCommand = new SqlCommand(userIdQuery, connection))
-				{
-					userIdCommand.Parameters.AddWithValue("@Username", username);
-					userId = (int)userIdCommand.ExecuteScalar();
-				}
 
 				// Most pedig lekérjük a felhasználóhoz tartozó adatokat a ForecastData táblából
 				string query = "SELECT TOP 1 * FROM ForecastData WHERE UserID = @UserID";
@@ -118,21 +109,12 @@ namespace WebApplication1
 			}
 		}
 
-		public object LoadHistoryData(string username)
+		public object LoadHistoryData(int userId)
 		{
 			string connectionString = _configuration.GetConnectionString("DefaultConnection");
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				connection.Open();
-
-				// Először lekérjük a felhasználó azonosítóját a felhasználónév alapján
-				string userIdQuery = "SELECT Id FROM Users WHERE Username = @Username";
-				int userId;
-				using (SqlCommand userIdCommand = new SqlCommand(userIdQuery, connection))
-				{
-					userIdCommand.Parameters.AddWithValue("@Username", username);
-					userId = (int)userIdCommand.ExecuteScalar();
-				}
 
 				// Most pedig lekérjük a felhasználóhoz tartozó történelmi adatokat a HistroyData táblából
 				string query = "SELECT * FROM HistroyData WHERE UserID = @UserID";
@@ -223,33 +205,43 @@ namespace WebApplication1
         }
     }
 
-    public object SaveHistoricalData(List<HistoricalData> historicalDataList)
-    {
-        string connectionString = _configuration.GetConnectionString("DefaultConnection");
-        using (SqlConnection connection = new SqlConnection(connectionString))
-        {
-            connection.Open();
+		public object SaveHistoricalData(List<HistoricalData> historicalDataList)
+		{
+			string connectionString = _configuration.GetConnectionString("DefaultConnection");
+			using (SqlConnection connection = new SqlConnection(connectionString))
+			{
+				connection.Open();
 
-            // Minden történelmi adatot beillesztünk az adatbázisba
-            foreach (var historicalData in historicalDataList)
-            {
-                string insertQuery = @"INSERT INTO HistroyData (UserID, ds, exchangeRate, amount, Direction) 
-                                       VALUES (@UserID, @Date, @ExchangeRate, @Amount, @Direction)";
-                using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
-                {
-                    insertCommand.Parameters.AddWithValue("@UserID", historicalData.UserID);
-                    insertCommand.Parameters.AddWithValue("@Date", historicalData.Date);
-                    insertCommand.Parameters.AddWithValue("@ExchangeRate", historicalData.ExchangeRate);
-                    insertCommand.Parameters.AddWithValue("@Amount", historicalData.Amount);
-                    insertCommand.Parameters.AddWithValue("@Direction", historicalData.Direction);
+				// Összes történelmi adat törlése az adatbázisból
+				string deleteQuery = @"DELETE FROM HistroyData WHERE UserID = @UserID";
+				using (SqlCommand deleteCommand = new SqlCommand(deleteQuery, connection))
+				{
+					deleteCommand.Parameters.AddWithValue("@UserID", historicalDataList[0].UserID);
+					deleteCommand.ExecuteNonQuery();
+				}
 
-                    insertCommand.ExecuteNonQuery();
-                }
-            }
 
-            return new { success = true, message = "Historical data saved successfully" };
-        }
-    }
+				// Minden történelmi adatot beillesztünk az adatbázisba
+				foreach (var historicalData in historicalDataList)
+				{
+					string insertQuery = @"INSERT INTO HistroyData (UserID, ds, exchangeRate, amount, Direction) 
+                                   VALUES (@UserID, @Date, @ExchangeRate, @Amount, @Direction)";
+					using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
+					{
+						insertCommand.Parameters.AddWithValue("@UserID", historicalData.UserID);
+						insertCommand.Parameters.AddWithValue("@Date", historicalData.Date);
+						insertCommand.Parameters.AddWithValue("@ExchangeRate", historicalData.ExchangeRate);
+						insertCommand.Parameters.AddWithValue("@Amount", historicalData.Amount);
+						insertCommand.Parameters.AddWithValue("@Direction", historicalData.Direction);
+
+						insertCommand.ExecuteNonQuery();
+					}
+				}
+
+				return new { success = true, message = "Historical data saved successfully" };
+			}
+		}
+
 
 
 

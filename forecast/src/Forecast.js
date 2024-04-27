@@ -1,5 +1,38 @@
 import React, { Component } from 'react';
-import './App.css';
+import { Container, Typography, Box, TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { keyframes } from '@emotion/react';
+import NewGameModal from './NewGameModal'; // importáljuk az új komponenst
+
+const primaryColor = '#ff4500';
+const secondaryColor = '#00bfff';
+const bgColor = '#f0f0f0';
+
+const pulseAnimation = keyframes`
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 ${primaryColor};
+  }
+  70% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+`;
+
+const glowAnimation = keyframes`
+  0% {
+    box-shadow: 0 0 0px ${secondaryColor};
+  }
+  50% {
+    box-shadow: 0 0 15px ${secondaryColor};
+  }
+  100% {
+    box-shadow: 0 0 0px ${secondaryColor};
+  }
+`;
 
 class Forecast extends Component {
   constructor(props) {
@@ -19,14 +52,16 @@ class Forecast extends Component {
       isEuroToForint: true,
       history: [],
       newsDate: '',
+      newsText: "",
       loggedInUser: this.props.loggedInUser,
-      loggedInUserId: this.props.loggedInUserId
+      loggedInUserId: this.props.loggedInUserId,
+      newGameModalOpen: false,
+      gettingNews: false
     };
     this.interval = null;
     this.API_URL = "http://localhost:5025/";
     this.handleExchange = this.handleExchange.bind(this);
     this.toggleExchangeDirection = this.toggleExchangeDirection.bind(this);
-    this.counterIndex=10;
   }
 
   componentDidMount() {
@@ -36,7 +71,7 @@ class Forecast extends Component {
   }
 
   loadData() {
-    fetch(this.API_URL + "api/Forecast/LoadData?username=test1")
+    fetch(`${this.API_URL}api/Forecast/LoadData?id=${this.props.loggedInUserId}`)
       .then(response => response.json())
       .then(data => {
         if (data.success) {
@@ -47,6 +82,7 @@ class Forecast extends Component {
             counterIndex: data.userData.CounterIndex,
             moneyEUR: data.userData.EUR,
             moneyHUF: data.userData.HUF,
+            newsDate: this.formatDate(data.userData.StartDate),
             dataLoaded: true
           });
         }
@@ -54,11 +90,12 @@ class Forecast extends Component {
   }
 
   loadHistoryData() {
-    fetch(this.API_URL + "api/Forecast/LoadHistoryData?username=test1")
+    fetch(`${this.API_URL}api/Forecast/LoadHistoryData?id=${this.props.loggedInUserId}`)
       .then(response => response.json())
-      .then(history => {
-        if (Array.isArray(history)) {
-          this.setState({ history: history });
+      .then(data => {
+        if (Array.isArray(data)) {
+          console.log(data)
+          this.setState({ history: data });
         }
       });
   }
@@ -118,16 +155,25 @@ class Forecast extends Component {
         counterIndex: (prevState.counterIndex + 1) % prevState.data.length
       }));
     }, 2000);
+    
     this.setState({ counting: true });
+  }
+
+  handelNewsDate = () =>{
+    const {data, counterIndex } = this.state;
+    this.setState({
+      newsDate: this.formatDate(data[counterIndex].ds)
+    });
   }
 
   handleStopCounter = () => {
     clearInterval(this.interval);
+    this.handelNewsDate();
     this.setState({ counting: false });
   }
 
   handleReset = () => {
-    this.handleStopCounter();
+    // this.handleStopCounter();
     this.setState({ counting: false, counterIndex: 0, moneyEUR: 100, moneyHUF: 0, history: [] });
     // this.componentWillUnmount();
   }
@@ -180,22 +226,27 @@ class Forecast extends Component {
 
   handleGetNews = () => {
     console.log("getNews");
+    this.setState({ gettingNews: true });
     const { newsDate } = this.state;
     fetch(`${this.API_URL}api/Forecast/GetNews?date=${newsDate}`)
       .then(response => response.json())
       .then(result => {
-        // TODO
+        this.setState({ newsText: result }); // A news állapot beállítása az újságokra
         console.log(result);
       })
       .catch(error => {
         console.error('Error:', error);
+      })
+      .finally(() => {
+        this.setState({ gettingNews: false });
       });
   };
-
+  
+  
   handleSaveData = () => {
     const { startDate, endDate, forecastDays, counterIndex, moneyEUR, moneyHUF, loggedInUserId } = this.state;
     const userData = {
-      userID: loggedInUserId, 
+      userID: loggedInUserId,
       startDate: startDate,
       endDate: endDate,
       forecastDays: forecastDays,
@@ -211,164 +262,209 @@ class Forecast extends Component {
       },
       body: JSON.stringify(userData)
     })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        console.log("User data saved successfully");
-        // Történelmi adatok mentése
-        this.saveHistoricalData(loggedInUserId);
-      } else {
-        console.error("Failed to save user data");
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          console.log("User data saved successfully");
+          this.saveHistoricalData(loggedInUserId);
+        } else {
+          console.error("Failed to save user data");
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
   }
 
   saveHistoricalData(userId) {
-  const { history } = this.state;
-  const formattedHistory = history.map(item => ({
-    userID: userId,
-    date: item.Date,
-    exchangeRate: item.ExchangeRate,
-    amount: item.Amount,
-    direction: item.Direction
-  }));
+    const { history } = this.state;
+    const formattedHistory = history.map(item => ({
+      userID: userId,
+      date: item.Date,
+      exchangeRate: item.ExchangeRate,
+      amount: item.Amount,
+      direction: item.Direction
+    }));
 
-  fetch(this.API_URL + "api/Forecast/SaveHistoricalData", {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(formattedHistory)
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      console.log("Historical data saved successfully");
-    } else {
-      console.error("Failed to save historical data");
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
-}
+    fetch(this.API_URL + "api/Forecast/SaveHistoricalData", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formattedHistory)
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          console.log("Historical data saved successfully");
+        } else {
+          console.error("Failed to save historical data");
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
+
+  handleNewGameClick = () => {
+    this.setState({ newGameModalOpen: true });
+  }
+
+  handleCloseNewGameModal = () => {
+    this.setState({ newGameModalOpen: false });
+  }
 
 
-
-
+  handleStartGame = (startDate, endDate, forecastDays) => {
+    this.setState({ startDate, endDate, forecastDays });
+    this.handleReset();
+    this.handleCalculate();
+  }
 
 
   render() {
-    const { dataLoaded, data, startDate, endDate, forecastDays, calculating, counterIndex, counting, moneyEUR, moneyHUF, amount, isEuroToForint, history, newsDate, loggedInUser, loggedInUserId } = this.state;
+    const {gettingNews, newGameModalOpen, dataLoaded, data, calculating, counterIndex, counting, moneyEUR, moneyHUF, amount, isEuroToForint, history, newsDate, loggedInUser, loggedInUserId, newsText } = this.state;
 
     if (!dataLoaded) {
       return <div>Loading...</div>;
     }
 
     return (
-      <div className="App">
-        <h2>Forecast {loggedInUser} {loggedInUserId}</h2>
-        <div className="calculate-form">
-          <label htmlFor="startDate">Start Date:</label>
-          <input type="date" id="startDate" name="startDate" value={startDate} onChange={this.handleInputChange} />
-          <label htmlFor="endDate">End Date:</label>
-          <input type="date" id="endDate" name="endDate" value={endDate} onChange={this.handleInputChange} />
-          <label htmlFor="forecastDays">Forecast Days:</label>
-          <input type="number" id="forecastDays" name="forecastDays" value={forecastDays} onChange={this.handleInputChange} />
-          <button onClick={this.handleCalculate} disabled={calculating}>Calculate</button>
-          <button onClick={this.handleManualRefresh}>Manual Refresh</button>
-          <button onClick={this.handleSaveData}>Save Data</button>
+      <Container maxWidth="md" sx={{ backgroundColor: bgColor, padding: '20px' }}>
+        <Typography variant="h3" sx={{ color: primaryColor, marginBottom: '20px' }}>Forecast {loggedInUser} {loggedInUserId}</Typography>
+        {!calculating && (
+      <div style={{ height: '44px' }}></div>
+      )}
+      {calculating && (
+        <div style={{ }}>
+          <Typography variant="body1" sx={{ color: primaryColor, marginBottom: '20px', animation: `${pulseAnimation} 1s infinite` }}>Calculating...</Typography>
         </div>
-        {calculating && <div className="calculating-indicator">Calculating...</div>}
+      )}
+        
+
+        <Box sx={{ marginBottom: '20px' }}>
+          <Button onClick={this.handleNewGameClick} sx={{ backgroundColor: secondaryColor, color: '#000000', marginRight: '10px' }}>New Game</Button>
+          <Button onClick={this.handleSaveData} sx={{ backgroundColor: secondaryColor, color: '#000000', marginLeft: '10px' }}>Save Data</Button>
+        </Box>
+        
+        <NewGameModal open={newGameModalOpen} onClose={this.handleCloseNewGameModal} onStartGame={this.handleStartGame} />
+        <Box sx={{ marginBottom: '20px' }}>
+          <Button onClick={this.handleStartCounter} disabled={counting || calculating} sx={{ backgroundColor: secondaryColor, color: '#000000', marginRight: '10px'}}>Start</Button>
+          <Button onClick={this.handleStopCounter} disabled={!counting || calculating} sx={{ backgroundColor: secondaryColor, color: '#000000', marginRight: '10px' }}>Stop</Button>
+        </Box>
+        <Box sx={{ marginBottom: '20px' }}>
+          <TextField
+            label="News Date"
+            type="date"
+            name="newsDate"
+            value={newsDate}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+          <Button onClick={this.handleGetNews} disabled={counting || calculating || gettingNews} sx={{ backgroundColor: secondaryColor, color: '#000000', marginLeft: '10px' }}>Get News</Button>
+        </Box>
+
+        {!gettingNews && (
+      <div style={{ height: '44px' }}></div>
+      )}
+        {gettingNews && (
+        <div style={{ }}>
+          <Typography variant="body1" sx={{ color: primaryColor, marginBottom: '20px', animation: `${pulseAnimation} 1s infinite` }}>Getting news...</Typography>
+        </div>
+      )}
+        {newsText.length > 0 && (
         <div>
-          <button onClick={this.handleStartCounter} disabled={counting}>Start</button>
-          <button onClick={this.handleStopCounter} disabled={!counting}>Stop</button>
-          <button onClick={this.handleReset}>Reset</button>
+          <Typography variant="h5">News</Typography>
+          {newsText.split("\r\n").map((item, index) => (
+            <Typography key={index}>{item}</Typography>
+          ))}
         </div>
+      )}
 
-        <div className="news-section">
-          <label htmlFor="newsDate">News Date:</label>
-          <input type="date" id="newsDate" name="newsDate" value={newsDate} onChange={this.handleInputChange} />
-          <button onClick={this.handleGetNews}>Get News</button>
-        </div>
 
-        <table>
-          <tr className='table2'>
-            <th>EUR: {moneyEUR.toFixed(3)}</th>
-            <th>HUF: {moneyHUF.toFixed(3)}</th>
-          </tr>
-          <tr>
-            <td><button onClick={this.toggleExchangeDirection}> {isEuroToForint ? "EUR to HUF" : "HUF to EUR"} </button></td>
-            <td><input type="number" id="amount" name="amount" value={amount} onChange={this.handleInputChange} /></td>
-            <td><button onClick={this.handleExchange} disabled={counting}>Exchange</button></td>
-          </tr>
-        </table>
-        <table>
-          <thead>
-            <tr className='table3'>
-              <th>Exchange history</th>
-              <th>Date</th>
-              <th>Exchange rate</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            {history.map((item, index) => (
-              <tr key={index}>
-                <td></td>
-                <td>{this.formatDate(item.Date)}</td>
-                <td>{item.ExchangeRate.toFixed(3)}</td>
-                <td>{item.Amount.toFixed(0)}</td>
-                <td>{item.Direction === 0 ? "EUR to HUF" : "HUF to EUR"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <table className='table'>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Forecast</th>
-              <th>Actual</th>
-              <th>Changes: </th>
-              <th>Last day</th>
-              <th>Last 3 days</th>
-              <th>Last 7 days</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.length > 0 && (
-              <tr>
-                <td>{this.formatDate(data[counterIndex].ds)}</td>
-                <td>{data[counterIndex].Forecast !== null ? data[counterIndex].Forecast.toFixed(3) : ''}</td>
-                <td>{data[counterIndex].Actual !== null ? data[counterIndex].Actual.toFixed(3) : ''}</td>
-                <td></td>
-                <td style={{ color: this.lastDaysChanges(1) >= 0 ? 'green' : 'red' }}> {this.lastDaysChanges(1)}</td>
-                <td style={{ color: this.lastDaysChanges(3) >= 0 ? 'green' : 'red' }}> {this.lastDaysChanges(3)}</td>
-                <td style={{ color: this.lastDaysChanges(7) >= 0 ? 'green' : 'red' }}> {this.lastDaysChanges(7)}</td>
-              </tr>
-            )}
-          </tbody>
-          <tbody>
-            <tr>
-              <td colSpan="3"><hr /></td>
-            </tr>
-          </tbody>
-          <tbody >
-            {data.map((note, index) => (
-              <tr key={index} style={{ background: index === counterIndex ? 'yellow' : 'transparent' }}>
-                <td>{this.formatDate(note.ds)}</td>
-                <td>{note.Forecast !== null ? note.Forecast.toFixed(3) : ''}</td>
-                <td>{note.Actual !== null ? note.Actual.toFixed(3) : ''}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+        <TableContainer>
+          <Table sx={{ marginBottom: '20px' }}>
+            <TableHead>
+              <TableRow>
+                <TableCell>EUR: {moneyEUR.toFixed(3)}</TableCell>
+                <TableCell>HUF: {moneyHUF.toFixed(3)}</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell><Button onClick={this.toggleExchangeDirection} sx={{ backgroundColor: secondaryColor, color: '#000000' }}>{isEuroToForint ? "EUR to HUF" : "HUF to EUR"}</Button></TableCell>
+                <TableCell><input type="number" id="amount" name="amount" value={amount} onChange={this.handleInputChange} sx={{ animation: `${glowAnimation} 2s infinite` }} /></TableCell>
+                <TableCell><Button onClick={this.handleExchange} disabled={counting} sx={{ backgroundColor: secondaryColor, color: '#000000' }}>Exchange</Button></TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TableContainer>
+          <Table sx={{ marginBottom: '20px' }}>
+            <TableHead>
+              <TableRow>
+                <TableCell>Exchange history</TableCell>
+                <TableCell>Date</TableCell>
+                <TableCell>Exchange rate</TableCell>
+                <TableCell>Amount</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {history.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell></TableCell>
+                  <TableCell>{this.formatDate(item.Date)}</TableCell>
+                  <TableCell>{item.ExchangeRate.toFixed(3)}</TableCell>
+                  <TableCell>{item.Amount.toFixed(0)}</TableCell>
+                  <TableCell>{item.Direction === 0 ? "EUR to HUF" : "HUF to EUR"}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Date</TableCell>
+                <TableCell>Forecast</TableCell>
+                <TableCell>Actual</TableCell>
+                <TableCell>Changes:</TableCell>
+                <TableCell>Last day</TableCell>
+                <TableCell>Last 3 days</TableCell>
+                <TableCell>Last 7 days</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data.length > 0 && (
+                <TableRow>
+                  <TableCell>{this.formatDate(data[counterIndex].ds)}</TableCell>
+                  <TableCell>{data[counterIndex].Forecast !== null ? data[counterIndex].Forecast.toFixed(3) : ''}</TableCell>
+                  <TableCell>{data[counterIndex].Actual !== null ? data[counterIndex].Actual.toFixed(3) : ''}</TableCell>
+                  <TableCell></TableCell>
+                  <TableCell style={{ color: this.lastDaysChanges(1) >= 0 ? 'green' : 'red' }}>{this.lastDaysChanges(1)}</TableCell>
+                  <TableCell style={{ color: this.lastDaysChanges(3) >= 0 ? 'green' : 'red' }}>{this.lastDaysChanges(3)}</TableCell>
+                  <TableCell style={{ color: this.lastDaysChanges(7) >= 0 ? 'green' : 'red' }}>{this.lastDaysChanges(7)}</TableCell>
+                </TableRow>
+              )}
+              <TableRow>
+                <TableCell colSpan="3"><hr /></TableCell>
+              </TableRow>
+              {data.map((note, index) => (
+                <TableRow key={index} sx={{ background: index === counterIndex ? 'yellow' : 'transparent' }}>
+                  <TableCell>{this.formatDate(note.ds)}</TableCell>
+                  <TableCell>{note.Forecast !== null ? note.Forecast.toFixed(3) : ''}</TableCell>
+                  <TableCell>{note.Actual !== null ? note.Actual.toFixed(3) : ''}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Container>
     );
   }
 }

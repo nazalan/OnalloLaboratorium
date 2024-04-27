@@ -60,8 +60,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "username",
-        "Type": "System.String",
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": false
       }
     ],
@@ -76,8 +76,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "username",
-        "Type": "System.String",
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": false
       }
     ],
