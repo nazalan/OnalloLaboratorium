@@ -6,7 +6,7 @@ def main(date):
           model_path="C:\\work\\onlab\\workspace\\llama-2-7b-chat.Q5_K_M.gguf",
     )
     output = llm(
-            "Name three news headlines from {date} about the HUF-EUR exchange rate.",
+            "Provide three news headlines from {date} regarding the HUF-EUR exchange rate.",
             max_tokens=250,
     )
     print(output['choices'][0]['text'])

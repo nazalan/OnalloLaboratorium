@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Login from './Login';
 import Register from './Register';
 import Forecast from './Forecast';
+import Chart from './Chart';
+
 
 const App = () => {
   const [loggedInUser, setLoggedInUser] = useState('');
@@ -15,6 +17,7 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/forecast" element={<Forecast loggedInUser={loggedInUser} loggedInUserId={loggedInUserId} />} />
           <Route path="/" element={<Navigate to="/login" />} /> 
+          <Route path="/chart" element={<Chart />} />
         </Routes>
     </Router>
   );

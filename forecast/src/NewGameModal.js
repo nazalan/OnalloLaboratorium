@@ -5,16 +5,21 @@ class NewGameModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      startDate: '2010-01-01',
-      endDate: '2011-01-01',
-      forecastDays: '20'
+      startDate: '',
+      endDate: '',
+      forecastDays: 0,
     };
   }
 
   handleInputChange = event => {
     const { name, value } = event.target;
-    this.setState({ [name]: value });
+    if (name === "forecastDays") {
+      this.setState({ [name]: parseInt(value, 10) });
+    } else {
+      this.setState({ [name]: value });
+    }
   }
+  
 
   handleStartGame = () => {
     const { startDate, endDate, forecastDays } = this.state;

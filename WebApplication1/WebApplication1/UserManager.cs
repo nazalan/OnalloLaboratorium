@@ -207,6 +207,11 @@ namespace WebApplication1
 
 		public object SaveHistoricalData(List<HistoricalData> historicalDataList)
 		{
+			if (historicalDataList == null || historicalDataList.Count == 0)
+			{
+				return new { success = false, message = "Historical data list is empty or null." };
+			}
+
 			string connectionString = _configuration.GetConnectionString("DefaultConnection");
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
@@ -219,7 +224,6 @@ namespace WebApplication1
 					deleteCommand.Parameters.AddWithValue("@UserID", historicalDataList[0].UserID);
 					deleteCommand.ExecuteNonQuery();
 				}
-
 
 				// Minden történelmi adatot beillesztünk az adatbázisba
 				foreach (var historicalData in historicalDataList)
@@ -241,6 +245,7 @@ namespace WebApplication1
 				return new { success = true, message = "Historical data saved successfully" };
 			}
 		}
+
 
 
 
