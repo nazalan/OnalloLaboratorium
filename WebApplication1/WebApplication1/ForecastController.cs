@@ -101,7 +101,65 @@ namespace WebApplication1
 		[Route("GetNews")]
 		public JsonResult GetNews(DateTime date)
 		{
-			return _dataProcessor.GetNews(date);
+			string formattedDate = date.ToString("yyyy-MM-dd");
+			string query = $"SELECT news FROM [exchangeRate].[dbo].[ExchangeRate] WHERE Date = '{formattedDate}'";
+			DataTable table = new DataTable();
+			string connectionString = _configuration.GetConnectionString("DefaultConnection");
+			using (SqlConnection myCon = new SqlConnection(connectionString))
+			{
+				myCon.Open();
+				using (SqlCommand myCommand = new SqlCommand(query, myCon))
+				{
+					SqlDataReader myReader = myCommand.ExecuteReader();
+					table.Load(myReader);
+				}
+			}
+
+			if (table.Rows.Count > 0 && table.Rows[0]["news"] != DBNull.Value && String.IsNullOrWhiteSpace(table.Rows[0]["news"].ToString()))
+			{
+				return new JsonResult(table);
+			}
+			else
+			{
+				var result= _dataProcessor.GetNews(date);
+				using (SqlConnection myCon = new SqlConnection(connectionString))
+				{
+					myCon.Open();
+					using (SqlCommand myCommand = new SqlCommand("UPDATE [exchangeRate].[dbo].[ExchangeRate] SET news = @News WHERE [date] = @Date", myCon))
+					{
+						myCommand.Parameters.AddWithValue("@Date", formattedDate);
+						myCommand.Parameters.AddWithValue("@News", result);
+						myCommand.ExecuteNonQuery();
+					}
+				}
+
+				return new JsonResult(result);
+			}
 		}
+
+
+		[HttpGet]
+		[Route("GetNewNews")]
+		public JsonResult GetNewNews(DateTime date)
+		{
+			string formattedDate = date.ToString("yyyy-MM-dd");
+			DataTable table = new DataTable();
+			string connectionString = _configuration.GetConnectionString("DefaultConnection");
+			var result = _dataProcessor.GetNews(date);
+
+			using (SqlConnection myCon = new SqlConnection(connectionString))
+			{
+				myCon.Open();
+					using (SqlCommand myCommand = new SqlCommand("UPDATE [exchangeRate].[dbo].[ExchangeRate] SET news = @News WHERE [date] = @Date", myCon))
+					{
+						myCommand.Parameters.AddWithValue("@Date", formattedDate);
+						myCommand.Parameters.AddWithValue("@News", result);
+						myCommand.ExecuteNonQuery();
+					}
+			}
+			return new JsonResult(result);
+		}
+
+
 	}
 }

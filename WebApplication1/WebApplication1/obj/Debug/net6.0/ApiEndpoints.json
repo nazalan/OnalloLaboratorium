@@ -37,6 +37,22 @@
   },
   {
     "ContainingType": "WebApplication1.ForecastController",
+    "Method": "GetNewNews",
+    "RelativePath": "api/Forecast/GetNewNews",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "date",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebApplication1.ForecastController",
     "Method": "GetNews",
     "RelativePath": "api/Forecast/GetNews",
     "HttpMethod": "GET",

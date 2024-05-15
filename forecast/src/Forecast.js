@@ -67,9 +67,9 @@ class Forecast extends Component {
   }
 
   componentDidMount() {
-    this.loadData();
-    this.loadHistoryData();
-    this.handleCalculate();
+    this.loadData()
+    this.loadHistoryData()
+    this.handleCalculate()
   }
 
   loadData() {
@@ -107,10 +107,14 @@ class Forecast extends Component {
 
   async refreshData() {
     this.setState({ counting: false });
+    const {counterIndex, newsDate } = this.state;
+    console.log(counterIndex)
     fetch(this.API_URL + "api/Forecast/GetData")
       .then(response => response.json())
       .then(_data => {
-        this.setState({ data: _data });
+        this.setState({ data: _data, newsDate: _data[counterIndex].ds })
+        console.log(_data[counterIndex].ds)
+        console.log(newsDate);
       });
       
   }
@@ -237,12 +241,34 @@ class Forecast extends Component {
 
   handleGetNews = () => {
     console.log("getNews");
+    const { data, counterIndex, newsDate } = this.state;
+    this.setState({ newsdate: data[counterIndex].ds });
     this.setState({ gettingNews: true });
-    const { newsDate } = this.state;
+    console.log(newsDate);
     fetch(`${this.API_URL}api/Forecast/GetNews?date=${newsDate}`)
       .then(response => response.json())
       .then(result => {
-        this.setState({ newsText: result }); // A news állapot beállítása az újságokra
+        this.setState({ newsText: result });
+        console.log(result);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      })
+      .finally(() => {
+        this.setState({ gettingNews: false });
+      });
+  };
+
+  handleGetNewNews = () => {
+    console.log("getNewNews");
+    const { data, counterIndex, newsDate } = this.state;
+    this.setState({ newsdate: data[counterIndex].ds });
+    this.setState({ gettingNews: true });
+    console.log(newsDate);
+    fetch(`${this.API_URL}api/Forecast/GetNewNews?date=${newsDate}`)
+      .then(response => response.json())
+      .then(result => {
+        this.setState({ newsText: result });
         console.log(result);
       })
       .catch(error => {
@@ -343,7 +369,7 @@ class Forecast extends Component {
   
 
   render() {
-    const {forecastDays, gettingNews, newGameModalOpen, dataLoaded, data, calculating, counterIndex, counting, moneyEUR, moneyHUF, amount, isEuroToForint, history, newsDate, loggedInUser, loggedInUserId, newsText } = this.state;
+    const {forecastDays, gettingNews, newGameModalOpen, dataLoaded, data, calculating, counterIndex, counting, moneyEUR, moneyHUF, amount, isEuroToForint, history, newsDate, loggedInUser, newsText } = this.state;
   
     if (!dataLoaded) {
       return <div>Loading...</div>;
@@ -352,7 +378,8 @@ class Forecast extends Component {
     return (
       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
         <Box sx={{ flex: 1, backgroundColor: bgColor, padding: '20px' }}>
-          <Typography variant="h3" sx={{ color: primaryColor, marginBottom: '20px' }}>Forecast {loggedInUser} {loggedInUserId}</Typography>
+          <Typography variant="h3" sx={{ color: primaryColor, marginBottom: '20px' }}>Forecast</Typography>
+          <Typography sx={{ color: primaryColor, marginBottom: '10px' }}>Logged in as: {loggedInUser}</Typography>
           {!calculating && (
             <div style={{ height: '44px' }}></div>
           )}
@@ -390,6 +417,15 @@ class Forecast extends Component {
               {newsText.split("\r\n").map((item, index) => (
                 <Typography key={index}>{item}</Typography>
               ))}
+              <Box sx={{ marginBottom: '20px' }}>
+            <Button onClick={this.handleGetNewNews} disabled={counting || calculating || gettingNews} sx={{ backgroundColor: secondaryColor, color: '#000000', marginLeft: '10px' }}>Get New News</Button>
+              </Box>
+            </div>
+          )}
+          {newsText.length <= 0 && (
+            <div>
+              <Typography variant="h5">News</Typography>
+              <Typography>No news for this date yet</Typography>
             </div>
           )}
           <Chart data={data.slice(0, counterIndex+forecastDays+1)} days={forecastDays} />

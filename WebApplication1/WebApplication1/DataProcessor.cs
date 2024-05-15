@@ -29,7 +29,7 @@ namespace WebApplication1
 			return new JsonResult("Calculated");
 		}
 
-		public JsonResult GetNews(DateTime date)
+		public string GetNews(DateTime date)
 		{
 			string pythonPath = @"C:\Users\ThinkPad\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe";
 			string scriptPath = @"C:\work\OnalloLaboratorium\workspace\news.py";
@@ -37,7 +37,7 @@ namespace WebApplication1
 
 			string result = _scriptRunner.RunPythonScript(pythonPath, scriptPath, arguments);
 
-			return new JsonResult(result);
+			return result;
 		}
 	}
 }
